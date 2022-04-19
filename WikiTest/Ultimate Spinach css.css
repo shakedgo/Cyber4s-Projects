@@ -1,0 +1,63 @@
+.sides:hover {
+    text-decoration: underline dotted green;
+    cursor: pointer;
+    /* Trol - make it look like a link */
+}
+
+.search {
+    display: flex;
+    justify-content: right;
+    background-color: #f6f6f6;
+    padding: 20px;
+}
+
+.container-1 {
+    display: flex;
+
+}
+
+.box-1 {
+    flex: 3;
+}
+
+.box-2 {
+    flex: 1;
+    margin: 20px;
+    padding: 30px;
+    border: 2px solid rgb(61, 129, 255);
+}
+.top-sidebar {
+    text-align: center;
+    background-color:rgba(61, 129, 255, 0.572);
+    margin: 5px;
+}
+
+.chronology-container{
+    display: flex;
+    justify-content: right;
+    text-align: center;
+    font-size: 13px;
+}
+
+.chronology {
+    margin-right: 10px;
+    width: 75px;
+}
+
+.content-box {
+    flex: 1;
+    padding: 10px;
+    width: fit-content;
+    border: 2px solid rgb(61, 129, 255);
+}
+
+body {
+    display: flex;
+}
+.side-panel {
+    display: flex;
+    justify-content: left;
+    border-right: 1px solid rgb(61, 129, 255);
+    background-color: #f6f6f6;
+    margin-right: 20px;
+}

@@ -1,0 +1,26 @@
+td {
+    width: 80px;
+    height: 80px;
+}
+
+.dark {
+    background-color: rgb(59, 59, 59);
+    border: 2px solid black;
+}
+
+.white {
+    border: 2px solid black;
+    border: 2px solid black;
+}
+/*
+td:hover {
+    background-color: rgba(180, 0, 0, 0.572);
+}
+*/
+.clicked {
+    background-color: rgba(180, 0, 0, 0.766);
+}
+
+.possibleMove {
+    background-color: rgba(180, 0, 0, 0.457);
+}
