@@ -41,7 +41,7 @@ class Piece {
             console.log("Unknown name: " + this.name)
         }
         //console.log('relativeMoves', relativeMoves);
-
+        
         let absoluteMoves = [];
         for (let relativeMove of relativeMoves) {
             // we set absolute move by setting the row or col the piece is in right now.
@@ -58,11 +58,14 @@ class Piece {
             const absoluteCol = absoluteMove[1];
             // we filter the moves that are out of the chessboard.
             if (absoluteRow >= 0 && absoluteRow <= 7 && absoluteCol >= 0 && absoluteCol <= 7) {
-                filteredMoves.push(absoluteMove);
+                //filteredMoves.push(absoluteMove);
+                if (boardData.getPiece(absoluteRow,absoluteCol) === undefined){
+                    filteredMoves.push(absoluteMove);
+                }
             }
         }
+        //We return the filtered possible moves.
         //console.log('filteredMoves', filteredMoves);
-        // We return the filtered possible moves.
         return filteredMoves;
     }
 
@@ -72,7 +75,7 @@ class Piece {
         if (this.color === WHITE_PLAYER){
             direction = -1;
         }
-        result.push([1 * direction, 0])
+        result.push([direction, 0])
         // This is how i've done it before ofer's solution.
         // Can mark 2 rows if in first move.
         //if (this.color === DARK_PLAYER) {
@@ -100,17 +103,14 @@ class Piece {
     }
     getKnightRelativeMoves() {
         let result = [];
-        for (let i = 0; i < BOARD_SIZE; i++) {
-            result.push([0 + 2, 0 - 1]);
-            result.push([0 + 2, 0 + 1]);
-            result.push([0 + 1, 0 - 2]);
-            result.push([0 + 1, 0 + 2]);
-
-            result.push([0 - 2, 0 + 1]);
-            result.push([0 - 2, 0 - 1]);
-            result.push([0 - 1, 0 + 2]);
-            result.push([0 - 1, 0 - 2]);
-        }
+        result.push([0 + 2, 0 - 1]);
+        result.push([0 + 2, 0 + 1]);
+        result.push([0 + 1, 0 - 2]);
+        result.push([0 + 1, 0 + 2]);
+        result.push([0 - 2, 0 + 1]);
+        result.push([0 - 2, 0 - 1]);
+        result.push([0 - 1, 0 + 2]);
+        result.push([0 - 1, 0 - 2]);
         return result;
     }
     getBishopRelativeMoves() {
@@ -132,18 +132,14 @@ class Piece {
     getKingRelativeMoves() {
         let result = [];
         for (let i = 1; i < 2; i++) {
-            result.push([0, 0 + i]);
-            result.push([0, 0 - i]);
-            result.push([0 - i, 0 + i]);
-            result.push([0 - i, 0 - i]);
-            result.push([0 - i, 0]);
-        }
-        for (let i = 1; i < 2; i++) {
             result.push([0, 0 - i]);
             result.push([0, 0 + i]);
             result.push([0 + i, 0 - i]);
             result.push([0 + i, 0 + i]);
             result.push([0 + i, 0]);
+            result.push([0 - i, 0 + i]);
+            result.push([0 - i, 0 - i]);
+            result.push([0 - i, 0]);
         }
         return result;
     }
@@ -238,8 +234,10 @@ function onCellClick(event, row, col) {
         }
     }
     const piece = boardData.getPiece(row, col);
+    //console.log(piece)
     if (piece !== undefined) {
         let possibleMoves = piece.getPossibleMoves();
+        console.log(possibleMoves);
         for (let possibleMove of possibleMoves) {
             const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
             cell.classList.add('possibleMove');
