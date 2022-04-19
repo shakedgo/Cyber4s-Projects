@@ -10,7 +10,8 @@ const KING = 'King';
 const QUEEN = 'Queen';
 
 let selectedCell;
-let pieces = [];
+// let pieces = [];
+let boardData;
 let table;
 
 class piece {
@@ -23,9 +24,9 @@ class piece {
 
     getPossibleMoves() {
         let relativeMoves;
-        console.log(this.name)
         if (this.name === PAWN) {
             relativeMoves = this.getPawnRelativeMoves();
+            // relativeMoves gets something like this [[1, 0]];
         } else if (this.name === ROOK) {
             relativeMoves = this.getRookRelativeMoves();
         } else if (this.name === KNIGHT) {
@@ -39,34 +40,46 @@ class piece {
         } else {
             console.log("Unknown name: " + this.name)
         }
-        console.log('relativeMoves', relativeMoves);
+        //console.log('relativeMoves', relativeMoves);
 
         let absoluteMoves = [];
         for (let relativeMove of relativeMoves) {
+            // we set absolute move by setting the row or col the piece is in right now.
+            // and them we add relativeMove answer.
             const absoluteRow = this.row + relativeMove[0];
             const absoluteCol = this.col + relativeMove[1];
             absoluteMoves.push([absoluteRow, absoluteCol]);
         }
-        console.log('absoluteMoves', absoluteMoves);
+        //console.log('absoluteMoves', absoluteMoves);
 
         let filteredMoves = [];
         for (let absoluteMove of absoluteMoves) {
             const absoluteRow = absoluteMove[0];
             const absoluteCol = absoluteMove[1];
+            // we filter the moves that are out of the chessboard.
             if (absoluteRow >= 0 && absoluteRow <= 7 && absoluteCol >= 0 && absoluteCol <= 7) {
                 filteredMoves.push(absoluteMove);
             }
         }
-        console.log('filteredMoves', filteredMoves);
+        //console.log('filteredMoves', filteredMoves);
+        // We return the filtered possible moves.
         return filteredMoves;
     }
 
     getPawnRelativeMoves() {
+        let result = [];
         if (this.color === DARK_PLAYER) {
-            return [[1, 0]];
+            if (this.row === 1){
+                result.push([2, 0])
+            }
+            result.push([1,0]);
         } else if (this.color === WHITE_PLAYER) {
-            return [[-1, 0]];
+            if (this.row === 6){
+                result.push([-2, 0]);
+            }
+            result.push([-1, 0]);
         }
+        return result;
     }
     getRookRelativeMoves() {
         let result = [];
@@ -151,6 +164,23 @@ class piece {
     }
 }
 
+class BoardData {
+    constructor(pieces) {
+        this.pieces = pieces;
+    }
+    // Returns piece in row, col, or undefined if not exists.
+    getPiece(row, col) {
+        for (let i = 0; i < this.pieces.length; i++) {
+            if (this.pieces[i].row === row && this.pieces[i].col === col) {
+                return this.pieces[i];
+            }
+        }
+        return undefined;
+    }
+    // Check if the possiple moves empty
+    //isEmpty (piece) {
+    //}
+}
 
 // Builds the board.
 function build() {
@@ -176,29 +206,27 @@ function build() {
             td.addEventListener('click', (event) => onCellClick(event, row, col));
         }
     }
-    pieces = getInitialBoard();
-
-    for (let piece of pieces) {
-        addImg(table.rows[piece.row].cells[piece.col], piece.color, piece.name);
+    boardData = new BoardData(getInitialPieces());
+    for (let piece of boardData.pieces) {
+        const cell = table.rows[piece.row].cells[piece.col];
+        addImg(cell, piece.color, piece.name);
     }
 }
 
 // When clicking a td it marks it.
 function onCellClick(event, row, col) {
-    console.log(row, col)
     // Clean board.
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
             table.rows[i].cells[j].classList.remove('possibleMove');
         }
     }
-
-    for (let piece of pieces) {
-        if (piece.row === row && piece.col === col) {
-            console.log(piece);
-            let possibleMoves = piece.getPossibleMoves();
-            for (let possibleMove of possibleMoves)
-                table.rows[possibleMove[0]].cells[possibleMove[1]].classList.add('possibleMove');
+    const piece = boardData.getPiece(row, col);
+    if (piece !== undefined) {
+        let possibleMoves = piece.getPossibleMoves();
+        for (let possibleMove of possibleMoves) {
+            const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
+            cell.classList.add('possibleMove');
         }
     }
 
@@ -218,7 +246,7 @@ function addImg(cell, color, name) {
 }
 
 // Puts the pieces on the board
-function getInitialBoard() {
+function getInitialPieces() {
     let result = [];
     addFirstRowPieces(result, 0, DARK_PLAYER);
     addFirstRowPieces(result, 7, WHITE_PLAYER);
