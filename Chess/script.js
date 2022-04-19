@@ -14,7 +14,7 @@ let selectedCell;
 let boardData;
 let table;
 
-class piece {
+class Piece {
     constructor(row, col, color, name) {
         this.row = row;
         this.col = col;
@@ -68,17 +68,24 @@ class piece {
 
     getPawnRelativeMoves() {
         let result = [];
-        if (this.color === DARK_PLAYER) {
-            if (this.row === 1){
-                result.push([2, 0])
-            }
-            result.push([1,0]);
-        } else if (this.color === WHITE_PLAYER) {
-            if (this.row === 6){
-                result.push([-2, 0]);
-            }
-            result.push([-1, 0]);
+        let direction = 1;
+        if (this.color === WHITE_PLAYER){
+            direction = -1;
         }
+        result.push([1 * direction, 0])
+        // This is how i've done it before ofer's solution.
+        // Can mark 2 rows if in first move.
+        //if (this.color === DARK_PLAYER) {
+        //    if (this.row === 1){
+        //        result.push([2, 0])
+        //    }
+        //    result.push([1,0]);
+        //} else if (this.color === WHITE_PLAYER) {
+        //    if (this.row === 6){
+        //        result.push([-2, 0]);
+        //    }
+        //    result.push([-1, 0]);
+        //}
         return result;
     }
     getRookRelativeMoves() {
@@ -168,6 +175,7 @@ class BoardData {
     constructor(pieces) {
         this.pieces = pieces;
     }
+    
     // Returns piece in row, col, or undefined if not exists.
     getPiece(row, col) {
         for (let i = 0; i < this.pieces.length; i++) {
@@ -175,8 +183,16 @@ class BoardData {
                 return this.pieces[i];
             }
         }
-        return undefined;
     }
+    // Ofer did it like this. - a bit shorter but does the same and I like to see it how I wrote it.
+    //getPiece(row, col) {
+    //    for (let piece of this.pieces) {
+    //        if (piece.row === row && piece.col === col) {
+    //            return piece;
+    //        }
+    //    }
+    //}
+
     // Check if the possiple moves empty
     //isEmpty (piece) {
     //}
@@ -251,21 +267,21 @@ function getInitialPieces() {
     addFirstRowPieces(result, 0, DARK_PLAYER);
     addFirstRowPieces(result, 7, WHITE_PLAYER);
     for (let i = 0; i < 8; i++) {
-        result.push(new piece(1, i, DARK_PLAYER, PAWN))
-        result.push(new piece(6, i, WHITE_PLAYER, PAWN))
+        result.push(new Piece(1, i, DARK_PLAYER, PAWN))
+        result.push(new Piece(6, i, WHITE_PLAYER, PAWN))
     }
     return result;
 }
 // To avoid duplicate in getInitialBoard().
 function addFirstRowPieces(result, row, color) {
-    result.push(new piece(row, 0, color, ROOK));
-    result.push(new piece(row, 1, color, KNIGHT));
-    result.push(new piece(row, 2, color, BISHOP));
-    result.push(new piece(row, 3, color, QUEEN));
-    result.push(new piece(row, 4, color, KING));
-    result.push(new piece(row, 5, color, BISHOP));
-    result.push(new piece(row, 6, color, KNIGHT));
-    result.push(new piece(row, 7, color, ROOK));
+    result.push(new Piece(row, 0, color, ROOK));
+    result.push(new Piece(row, 1, color, KNIGHT));
+    result.push(new Piece(row, 2, color, BISHOP));
+    result.push(new Piece(row, 3, color, QUEEN));
+    result.push(new Piece(row, 4, color, KING));
+    result.push(new Piece(row, 5, color, BISHOP));
+    result.push(new Piece(row, 6, color, KNIGHT));
+    result.push(new Piece(row, 7, color, ROOK));
 }
 
 
