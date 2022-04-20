@@ -13,6 +13,8 @@ let selectedCell;
 let boardData;
 let table;
 let previousPossible = [];
+let oldPiece;
+
 class Piece {
     constructor(row, col, color, name) {
         this.row = row;
@@ -190,9 +192,9 @@ class BoardData {
     }
     checkValid(possible, cell) {
         possible = possible.split("_")
-        console.log("possible = " + possible);
+        //console.log("possible = " + possible);
         cell = cell.split("_")
-        console.log("cell = " + cell);
+        //console.log("cell = " + cell);
         if (possible[0] === cell[0] && possible[1] === cell[1]) {
             return true;
         }
@@ -240,11 +242,12 @@ function onCellClick(event, row, col) {
             table.rows[i].cells[j].classList.remove("possibleMove");
         }
     }
-    let selectCell = selectedCell;
-    console.log(selectCell)
+    let previousSelection = selectedCell;
     const piece = boardData.getPiece(row, col);
+
     //console.log(piece)
     if (piece !== undefined) {
+        oldPiece = piece;
         let possibleMoves = piece.getPossibleMoves();
         //console.log(possibleMoves)
         for (let possibleMove of possibleMoves) {
@@ -258,17 +261,20 @@ function onCellClick(event, row, col) {
     }
     selectedCell = event.currentTarget;
     selectedCell.classList.add("clicked");
-    if (selectedCell !== undefined) {
+
+    // The movement - Works like shit.
+    if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible){
             if (boardData.checkValid(possibleMove, selectedCell.id)){
                 let select = selectedCell.id.split("_")
                 let cell = table.rows[select[0]].cells[select[1]];
-                let move = new Piece(select[0],select[1], selectCell.color, selectCell.name)
-                //addImg()
-                console.log(move)
+                cell.appendChild(previousSelection.firstChild)
+                break;
             }
+            previousPossible = [];
         }
     }
+    console.log(previousPossible)
 }
 
 // Adds the image to the cell.
