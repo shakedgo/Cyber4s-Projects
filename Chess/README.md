@@ -1,2 +1,2 @@
 # ChessBoard-Javascript
-CTRL+click [GOTO Original repo](https://github.com/Shakedgo/Chess)
+CTRL+click [GOTO Original (Not-Updated) repo](https://github.com/Shakedgo/Chess)
