@@ -13,6 +13,9 @@ let selectedCell;
 let boardData;
 let table;
 let previousPossible = [];
+let previousColor;
+let previousName;
+let previousLocation;
 
 class Piece {
     constructor(row, col, color, name) {
@@ -258,6 +261,15 @@ class BoardData {
         }
         return false;
     }
+    getPieceNum(row,col){
+        let count  = 0;
+        for (let pie of boardData.pieces){
+            if(pie.row === row && pie.col === col){
+                return count
+            }
+            count++;
+        }
+    }
 }
 
 // Builds the board.
@@ -313,6 +325,9 @@ function onCellClick(event, row, col) {
             cell.classList.add("possibleMove");
             previousPossible.push(cell.id);
         }
+        previousColor = boardData.getPiece(row,col).color;
+        previousName = boardData.getPiece(row,col).name;
+        previousLocation = boardData.getPieceNum(row,col);
         //previousPossible.push(cell.id);
     }
     if (selectedCell !== undefined) {
@@ -320,13 +335,18 @@ function onCellClick(event, row, col) {
     }
     selectedCell = event.currentTarget;
     selectedCell.classList.add("clicked");
-    
-    let cell = table.rows[row].cells[col];
-    // Relocating the piece to a possible move - works for first move.
-    if (cell.firstChild === null) {
+    console.log(boardData)
+
+    // Relocating the piece to a possible move
+    if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
-                cell.appendChild(previousSelection.firstChild);
+                selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
+                
+                //Gets the last piece location in boardData and changes it to the new one.
+                let cellLocation = selectedCell.id.split('_');
+                boardData.pieces[previousLocation] = new Piece(parseInt(cellLocation[0]), parseInt(cellLocation[1]), previousColor, previousName);
+                console.log(boardData)
             }
         }
     }
