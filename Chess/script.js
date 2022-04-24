@@ -308,10 +308,6 @@ function build() {
 
 // When clicking a td it marks it.
 function onCellClick(event, row, col) {
-    if (previousPossible.length > 1) {
-        previousPossible.shift(); // Deletes the old possible move - works only with pawn
-    }
-    console.log(previousPossible);
     // Clean board.
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
@@ -336,6 +332,10 @@ function paintPossibleMoves(row, col) {
     if (piece !== undefined) {
         let possibleMoves = piece.getPossibleMoves(boardData);
         for (let possibleMove of possibleMoves) {
+            for (let i = 0; i < previousPossible.length - possibleMoves.length; i++) {
+                previousPossible = []; // Deletes the old possible move - if 
+            }
+            console.log(previousPossible)
             const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
             cell.classList.add("possibleMove");
             previousPossible.push(cell.id);
@@ -350,7 +350,9 @@ function paintPossibleMoves(row, col) {
 function movePiece(previousSelection) {
     if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
+            console.log("checkvalid ")
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
+                console.log("enter")
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
 
                 //Gets the last piece location in boardData and changes it to the new one.
