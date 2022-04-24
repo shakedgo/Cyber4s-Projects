@@ -16,6 +16,7 @@ let previousPossible = [];
 let previousColor;
 let previousName;
 let previousLocation;
+let pieceTurn = WHITE_PLAYER;
 
 class Piece {
     constructor(row, col, color, name) {
@@ -104,7 +105,6 @@ class Piece {
 
         return result;
     }
-
     getMovesInDirection(directionRow, directionCol, boardData) {
         let result = [];
 
@@ -329,7 +329,7 @@ function onCellClick(event, row, col) {
 // Painting the possible moves
 function paintPossibleMoves(row, col) {
     const piece = boardData.getPiece(row, col);
-    if (piece !== undefined) {
+    if (piece !== undefined && pieceTurn === piece.color) {
         let possibleMoves = piece.getPossibleMoves(boardData);
         previousPossible = [];
         for (let possibleMove of possibleMoves) {
@@ -358,6 +358,11 @@ function movePiece(previousSelection) {
                     previousColor,
                     previousName
                 );
+                if (pieceTurn === WHITE_PLAYER) {
+                    pieceTurn = DARK_PLAYER;
+                } else {
+                    pieceTurn = WHITE_PLAYER;
+                }
             }
         }
     }
