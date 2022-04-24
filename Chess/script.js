@@ -149,13 +149,15 @@ class Piece {
             if (boardData.getPiece(row, col) === undefined) {
                 result.push([row, col]);
             } else {
-                if (boardData.getPiece(row, col).color !==
-                    boardData.getPiece(this.row, this.col).color) {
+                if (
+                    boardData.getPiece(row, col).color !==
+                    boardData.getPiece(this.row, this.col).color
+                ) {
                     result.push([row, col]);
                 }
             }
         }
-        
+
         //result.push([this.row + 2, this.col - 1]);
         //result.push([this.row + 2, this.col + 1]);
         //result.push([this.row + 1, this.col - 2]);
@@ -261,11 +263,11 @@ class BoardData {
         }
         return false;
     }
-    getPieceNum(row,col){
-        let count  = 0;
-        for (let pie of boardData.pieces){
-            if(pie.row === row && pie.col === col){
-                return count
+    getPieceNum(row, col) {
+        let count = 0;
+        for (let pie of boardData.pieces) {
+            if (pie.row === row && pie.col === col) {
+                return count;
             }
             count++;
         }
@@ -306,17 +308,30 @@ function build() {
 
 // When clicking a td it marks it.
 function onCellClick(event, row, col) {
-    if (previousPossible.length > 1){
-        previousPossible.shift()
+    if (previousPossible.length > 1) {
+        previousPossible.shift(); // Deletes the old possible move - works only with pawn
     }
+    console.log(previousPossible);
     // Clean board.
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
             table.rows[i].cells[j].classList.remove("possibleMove");
         }
     }
-    let previousSelection = selectedCell; 
+    let previousSelection = selectedCell;
+    paintPossibleMoves(row, col);
 
+    if (selectedCell !== undefined) {
+        selectedCell.classList.remove("clicked");
+    }
+    selectedCell = event.currentTarget;
+    selectedCell.classList.add("clicked");
+
+    movePiece(previousSelection);
+}
+
+// Painting the possible moves
+function paintPossibleMoves(row, col) {
     const piece = boardData.getPiece(row, col);
     if (piece !== undefined) {
         let possibleMoves = piece.getPossibleMoves(boardData);
@@ -325,28 +340,27 @@ function onCellClick(event, row, col) {
             cell.classList.add("possibleMove");
             previousPossible.push(cell.id);
         }
-        previousColor = boardData.getPiece(row,col).color;
-        previousName = boardData.getPiece(row,col).name;
-        previousLocation = boardData.getPieceNum(row,col);
-        //previousPossible.push(cell.id);
+        previousColor = boardData.getPiece(row, col).color;
+        previousName = boardData.getPiece(row, col).name;
+        previousLocation = boardData.getPieceNum(row, col);
     }
-    if (selectedCell !== undefined) {
-        selectedCell.classList.remove("clicked");
-    }
-    selectedCell = event.currentTarget;
-    selectedCell.classList.add("clicked");
-    console.log(boardData)
+}
 
-    // Relocating the piece to a possible move
+// Relocating the piece to a possible move
+function movePiece(previousSelection) {
     if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
-                
+
                 //Gets the last piece location in boardData and changes it to the new one.
-                let cellLocation = selectedCell.id.split('_');
-                boardData.pieces[previousLocation] = new Piece(parseInt(cellLocation[0]), parseInt(cellLocation[1]), previousColor, previousName);
-                console.log(boardData)
+                let cellLocation = selectedCell.id.split("_");
+                boardData.pieces[previousLocation] = new Piece(
+                    parseInt(cellLocation[0]),
+                    parseInt(cellLocation[1]),
+                    previousColor,
+                    previousName
+                );
             }
         }
     }
