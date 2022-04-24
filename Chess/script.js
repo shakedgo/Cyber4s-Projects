@@ -331,11 +331,8 @@ function paintPossibleMoves(row, col) {
     const piece = boardData.getPiece(row, col);
     if (piece !== undefined) {
         let possibleMoves = piece.getPossibleMoves(boardData);
+        previousPossible = [];
         for (let possibleMove of possibleMoves) {
-            for (let i = 0; i < previousPossible.length - possibleMoves.length; i++) {
-                previousPossible = []; // Deletes the old possible move - if 
-            }
-            console.log(previousPossible)
             const cell = table.rows[possibleMove[0]].cells[possibleMove[1]];
             cell.classList.add("possibleMove");
             previousPossible.push(cell.id);
@@ -350,9 +347,7 @@ function paintPossibleMoves(row, col) {
 function movePiece(previousSelection) {
     if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
-            console.log("checkvalid ")
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
-                console.log("enter")
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
 
                 //Gets the last piece location in boardData and changes it to the new one.
