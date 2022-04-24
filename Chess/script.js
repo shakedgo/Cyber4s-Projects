@@ -42,16 +42,6 @@ class Piece {
         }
         //console.log("relativeMoves", moves);
 
-        // let absoluteMoves = [];
-        // for (let relativeMove of relativeMoves) {
-        //     // we set absolute move by setting the row or col the piece is in right now.
-        //     // and them we add relativeMove answer.
-        //     const absoluteRow = this.row + relativeMove[0];
-        //     const absoluteCol = this.col + relativeMove[1];
-        //     absoluteMoves.push([absoluteRow, absoluteCol]);
-        // }
-        // //console.log('absoluteMoves', absoluteMoves);
-
         let filteredMoves = [];
         for (let absoluteMove of moves) {
             const absoluteRow = absoluteMove[0];
@@ -63,9 +53,7 @@ class Piece {
                 absoluteCol >= 0 &&
                 absoluteCol <= 7
             ) {
-                //if (boardData.getPiece(absoluteRow, absoluteCol) === undefined) {
                 filteredMoves.push(absoluteMove);
-                //}
             }
         }
         //We return the filtered possible moves.
@@ -127,17 +115,17 @@ class Piece {
                 boardData.getPiece(this.row, this.col).color
             ) {
                 result.push([row, col]);
-                console.log("opponent");
+                //console.log("opponent");
                 return result;
             } else if (
                 boardData.getPiece(row, col).color ===
                 boardData.getPiece(this.row, this.col).color
             ) {
-                console.log("player");
+                //console.log("player");
                 return result;
             }
         }
-        console.log("all empty");
+        //console.log("all empty");
         return result;
     }
     getKnightMoves(boardData) {
@@ -306,14 +294,17 @@ function build() {
 
 // When clicking a td it marks it.
 function onCellClick(event, row, col) {
+    if (previousPossible.length > 1){
+        previousPossible.shift()
+    }
     // Clean board.
     for (let i = 0; i < BOARD_SIZE; i++) {
         for (let j = 0; j < BOARD_SIZE; j++) {
             table.rows[i].cells[j].classList.remove("possibleMove");
         }
     }
+    let previousSelection = selectedCell; 
 
-    let previousSelection = selectedCell;
     const piece = boardData.getPiece(row, col);
     if (piece !== undefined) {
         let possibleMoves = piece.getPossibleMoves(boardData);
@@ -329,20 +320,16 @@ function onCellClick(event, row, col) {
     }
     selectedCell = event.currentTarget;
     selectedCell.classList.add("clicked");
-
-    //// Relocating the piece to a possible move - might need some adjustments.
-    //previousPossible = []; // Should be at top of the function;
-    //if (selectedCell.firstChild === null) {
-    //    for (let possibleMove of previousPossible) {
-    //        if (boardData.checkValid(possibleMove, selectedCell.id)) {
-    //            let select = selectedCell.id.split("_");
-    //            let cell = table.rows[select[0]].cells[select[1]];
-    //            cell.appendChild(previousSelection.firstChild);
-    //
-    //        }
-    //    }
-    //}
-    //console.log(previousPossible);
+    
+    let cell = table.rows[row].cells[col];
+    // Relocating the piece to a possible move - works for first move.
+    if (cell.firstChild === null) {
+        for (let possibleMove of previousPossible) {
+            if (boardData.checkValid(possibleMove, selectedCell.id)) {
+                cell.appendChild(previousSelection.firstChild);
+            }
+        }
+    }
 }
 
 // Adds the image to the cell.
