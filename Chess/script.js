@@ -17,6 +17,7 @@ let previousColor;
 let previousName;
 let previousLocation;
 let pieceTurn = WHITE_PLAYER;
+let count = 0;
 
 class Piece {
     constructor(row, col, color, name) {
@@ -328,7 +329,7 @@ function onCellClick(event, row, col) {
     selectedCell = event.currentTarget;
     selectedCell.classList.add("clicked");
 
-    movePiece(previousSelection, selectedCell, piece, row, col);
+    movePiece(previousSelection, piece, row, col);
 }
 
 // Painting the possible moves
@@ -348,7 +349,7 @@ function paintPossibleMoves(row, col, piece) {
 }
 
 // Relocating the piece to a possible move
-function movePiece(previousSelection, selectedCell, piece, row, col) {
+function movePiece(previousSelection, piece, row, col) {
     if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
@@ -362,44 +363,40 @@ function movePiece(previousSelection, selectedCell, piece, row, col) {
                     previousColor,
                     previousName
                 );
-                if (pieceTurn === WHITE_PLAYER) {
-                    pieceTurn = DARK_PLAYER;
-                } else {
-                    pieceTurn = WHITE_PLAYER;
-                }
+                changeTurn();
             }
         }
     } else if (
         selectedCell.firstChild !== null &&
         piece.color !== previousColor
     ) {
-        console.log(boardData.pieces);
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
                 selectedCell.removeChild(selectedCell.firstChild); // deletes the img.
-                boardData.removePiece(boardData.getPieceNum(row, col)); // deletes the pi
-                //boardData.removePiece(previousLocation);
+                boardData.removePiece(previousLocation); // deletes the previous piece from boardata
+                boardData.removePiece(boardData.getPieceNum(row, col)); // deletes the moved piece from boardata
 
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
-                //Gets the last piece location in boardData and changes it to the new one.
+
+                //Gets the last piece location in boardData and rewrite it to the new one.
                 let cellLocation = selectedCell.id.split("_");
-                console.log(previousLocation);
                 boardData.pieces[previousLocation] = new Piece(
                     parseInt(cellLocation[0]),
                     parseInt(cellLocation[1]),
                     previousColor,
                     previousName
                 );
-                if (pieceTurn === WHITE_PLAYER) {
-                    pieceTurn = DARK_PLAYER;
-                } else {
-                    pieceTurn = WHITE_PLAYER;
-                }
+                changeTurn();
             }
         }
-        //previousColor = boardData.getPiece(row, col).color;
-        //previousName = boardData.getPiece(row, col).name;
-        //previousLocation = boardData.getPieceNum(row, col);
+    }
+}
+
+function changeTurn() {
+    if (pieceTurn === WHITE_PLAYER) {
+        pieceTurn = DARK_PLAYER;
+    } else {
+        pieceTurn = WHITE_PLAYER;
     }
 }
 
