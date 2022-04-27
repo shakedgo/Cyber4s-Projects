@@ -21,11 +21,7 @@ td {
     border: 2px solid black;
     border: 2px solid black;
 }
-/*
-td:hover {
-    background-color: rgba(180, 0, 0, 0.572);
-}
-*/
+
 .clicked {
     background-color: rgba(180, 0, 0, 0.766);
 }
@@ -37,7 +33,7 @@ td:hover {
 .title {
     text-align: center;
 }
-  
+
 .winner-dialog {
     position: absolute;
     left: 50%;
