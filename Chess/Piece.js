@@ -7,6 +7,9 @@ class Piece {
     }
 
     getPossibleMoves(boardData) {
+        if (winner !== undefined){
+            return [];
+        }
         let moves;
         if (this.name === PAWN) {
             moves = this.getPawnMoves(boardData);

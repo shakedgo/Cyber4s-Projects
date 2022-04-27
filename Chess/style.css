@@ -1,3 +1,8 @@
+table {
+    position: relative;
+    margin: auto;
+}
+
 td {
     width: 80px;
     height: 80px;
@@ -24,3 +29,18 @@ td:hover {
 .possibleMove {
     background-color: rgba(180, 0, 0, 0.457);
 }
+
+.title {
+    text-align: center;
+}
+  
+.winner-dialog {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+    width: max-content;
+  }

@@ -18,6 +18,7 @@ let previousColor;
 let previousName;
 let previousLocation;
 let pieceTurn = WHITE_PLAYER;
+let winner;
 
 // Builds the board.
 function build() {
@@ -63,7 +64,7 @@ function onCellClick(event, row, col) {
 
     const piece = boardData.getPiece(row, col);
     paintPossibleMoves(row, col, piece);
-
+    
     if (selectedCell !== undefined) {
         selectedCell.classList.remove("clicked");
     }
@@ -87,8 +88,9 @@ function paintPossibleMoves(row, col, piece) {
     }
 }
 
-// Relocating the piece to a possible move
+// Relocating the piece.
 function movePiece(previousSelection, piece, row, col) {
+    // For regular move.
     if (selectedCell.firstChild === null) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
@@ -98,14 +100,19 @@ function movePiece(previousSelection, piece, row, col) {
                 changeTurn();
             }
         }
-    } else if (
+    } 
+    // For takes (eating).
+    else if (
         selectedCell.firstChild !== null &&
         piece.color !== previousColor
     ) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
-                boardData.removePiece(row, col); // deletes the previous piece from boardata
-
+                const removedPiece = boardData.removePiece(row, col); // deletes the previous piece from boardata
+                // Checks if the removed piece is king for win.
+                if (removedPiece !== undefined && removedPiece.name === KING){
+                    winner = previousColor;
+                }
                 selectedCell.removeChild(selectedCell.firstChild); // deletes the img.
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
 
@@ -115,6 +122,10 @@ function movePiece(previousSelection, piece, row, col) {
         }
         chagngePrevious(row, col);
     }
+    // For
+    if (winner !== undefined ){
+        winGame();
+    } 
 }
 
 //Gets the last piece location in boardData and rewrite it to the new one.
@@ -128,6 +139,13 @@ function newLocationBoardData() {
         previousColor,
         previousName
     );
+}
+
+function winGame(){
+    const winnerPopup = document.createElement('div');
+    winnerPopup.textContent =  winner + " player wins!";
+    winnerPopup.classList.add('winner-dialog');
+    table.appendChild(winnerPopup)
 }
 
 function chagngePrevious(row, col) {
@@ -149,6 +167,7 @@ function addImg(cell, color, name) {
     const img = document.createElement("img");
     img.style = "width: 60px;height:60px;";
     img.src = "pieces/" + color + name + ".svg";
+    img.draggable = false; // To not drag image
     cell.appendChild(img);
 }
 
