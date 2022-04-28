@@ -60,7 +60,7 @@ function onCellClick(event, row, col) {
             table.rows[i].cells[j].classList.remove("possibleMove");
         }
     }
-    let previousSelection = selectedCell;
+    let previousSelection = selectedCell; // Saving previous selection before making new one.
 
     const piece = boardData.getPiece(row, col);
     paintPossibleMoves(row, col, piece);
@@ -84,7 +84,7 @@ function paintPossibleMoves(row, col, piece) {
             cell.classList.add("possibleMove");
             previousPossible.push(cell.id);
         }
-        chagngePrevious(row, col);
+        savePrevious(row, col);
     }
 }
 
@@ -109,20 +109,19 @@ function movePiece(previousSelection, piece, row, col) {
         for (let possibleMove of previousPossible) {
             if (boardData.checkValid(possibleMove, selectedCell.id)) {
                 const removedPiece = boardData.removePiece(row, col); // deletes the previous piece from boardata
-                // Checks if the removed piece is king for win.
                 if (removedPiece !== undefined && removedPiece.name === KING) {
+                    // Checks if the removed piece is king for win.
                     winner = previousColor;
                 }
-                selectedCell.removeChild(selectedCell.firstChild); // deletes the img.
+                selectedCell.removeChild(selectedCell.firstChild);
                 selectedCell.appendChild(previousSelection.firstChild); // Replace the child (piece/img)
 
                 newLocationBoardData();
                 changeTurn();
             }
         }
-        chagngePrevious(row, col);
+        savePrevious(row, col);
     }
-    // For
     if (winner !== undefined) {
         winGame();
     }
@@ -141,6 +140,7 @@ function newLocationBoardData() {
     );
 }
 
+// Winning player popup
 function winGame() {
     const winnerPopup = document.createElement("div");
     winnerPopup.textContent = winner + " player wins!";
@@ -148,7 +148,10 @@ function winGame() {
     table.appendChild(winnerPopup);
 }
 
-function chagngePrevious(row, col) {
+// Saves previous information.
+function savePrevious(row, col) {
+    // previousData = boardData.getPiece(row,col) // Not working for some reason.
+    // Gonna use this instead ↓
     previousColor = boardData.getPiece(row, col).color;
     previousName = boardData.getPiece(row, col).name;
     previousLocation = [row, col];
@@ -171,8 +174,8 @@ function addImg(cell, color, name) {
     cell.appendChild(img);
 }
 
+// Create list of pieces (32 total)
 function getInitialPieces() {
-    // Create list of pieces (32 total)
     let result = [];
     for (let i = 0; i < BOARD_SIZE; i++) {
         result.push(new Piece(7, i, WHITE_PLAYER, PIECES[i]));

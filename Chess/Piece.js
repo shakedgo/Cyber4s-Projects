@@ -6,14 +6,14 @@ class Piece {
         this.name = name;
     }
 
+    // Returns an array of possible moves
     getPossibleMoves(boardData) {
-        if (winner !== undefined){
+        if (winner !== undefined) {
             return [];
         }
         let moves;
         if (this.name === PAWN) {
             moves = this.getPawnMoves(boardData);
-            // relativeMoves gets something like this [[1, 0]];
         } else if (this.name === ROOK) {
             moves = this.getRookMoves(boardData);
         } else if (this.name === KNIGHT) {
@@ -27,7 +27,6 @@ class Piece {
         } else {
             console.log("Unknown name: " + this.name);
         }
-        //console.log("relativeMoves", moves);
 
         let filteredMoves = [];
         for (let absoluteMove of moves) {
@@ -44,7 +43,6 @@ class Piece {
             }
         }
         //We return the filtered possible moves.
-        //console.log("filteredMoves", filteredMoves);
         return filteredMoves;
     }
 
@@ -57,6 +55,11 @@ class Piece {
         let position = [this.row + direction, this.col];
         if (boardData.getPiece(position[0], position[1]) === undefined) {
             result.push(position);
+            if (this.row === 1 || this.row === 6) {
+                // First move of pawn can be 2 steps.
+                position = [this.row + direction * 2, this.col];
+                result.push(position);
+            }
         }
         position = [this.row + direction, this.col + direction];
         if (boardData.getPiece(position[0], position[1]) !== undefined) {
@@ -140,15 +143,6 @@ class Piece {
                 }
             }
         }
-
-        //result.push([this.row + 2, this.col - 1]);
-        //result.push([this.row + 2, this.col + 1]);
-        //result.push([this.row + 1, this.col - 2]);
-        //result.push([this.row + 1, this.col + 2]);
-        //result.push([this.row - 2, this.col + 1]);
-        //result.push([this.row - 2, this.col - 1]);
-        //result.push([this.row - 1, this.col + 2]);
-        //result.push([this.row - 1, this.col - 2]);
         return result;
     }
     getBishopMoves(boardData) {

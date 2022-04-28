@@ -11,16 +11,16 @@ class BoardData {
             }
         }
     }
+    // Checks if the selected cell is also in the possible moves.
     checkValid(possible, cell) {
         possible = possible.split("_");
-        //console.log("possible = " + possible);
         cell = cell.split("_");
-        //console.log("cell = " + cell);
         if (possible[0] === cell[0] && possible[1] === cell[1]) {
             return true;
         }
         return false;
     }
+    // Return the piece element number from boarData pieces.
     getPieceNum(row, col) {
         let count = 0;
         for (let pie of boardData.pieces) {
@@ -30,6 +30,7 @@ class BoardData {
             count++;
         }
     }
+    // Deletes the piece from BoardData.
     removePiece(row, col) {
         for (let i = 0; i < this.pieces.length; i++) {
             const piece = this.pieces[i];
